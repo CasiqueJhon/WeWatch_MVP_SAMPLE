@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WeWatch_MVP_SAMPLE</string>
     <string name="movies_to_watch">Movies to Watch</string>
+    <string name="no_movies_main_title">There are currently no movies in your watch list. Tap the button below to get started!</string>
 </resources>

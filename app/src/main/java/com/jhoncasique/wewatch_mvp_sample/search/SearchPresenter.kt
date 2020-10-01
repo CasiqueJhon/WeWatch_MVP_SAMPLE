@@ -48,7 +48,7 @@ class SearchPresenter (private var viewInterface: SearchContract.ViewInterface,
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+        compositeDisposable.clear()
     }
 
 

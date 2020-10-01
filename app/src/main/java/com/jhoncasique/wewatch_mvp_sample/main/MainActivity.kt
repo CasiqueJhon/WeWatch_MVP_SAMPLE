@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity(), MainContract.ViewInterface {
         moviesRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = MainAdapter(arrayListOf(), this@MainActivity)
         moviesRecyclerView.adapter = adapter
-        fab = findViewById(R.id.no_movies_layout)
+        fab = findViewById(R.id.fab)
+        noMoviesLayout = findViewById(R.id.no_movies_layout)
         supportActionBar?.title = getString(R.string.movies_to_watch)
     }
 

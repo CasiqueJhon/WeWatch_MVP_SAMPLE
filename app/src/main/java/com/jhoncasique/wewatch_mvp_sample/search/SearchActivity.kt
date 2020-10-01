@@ -5,38 +5,83 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jhoncasique.wewatch_mvp_sample.R
+import com.jhoncasique.wewatch_mvp_sample.model.RemoteDataSource
+import com.jhoncasique.wewatch_mvp_sample.model.TmdbResponse
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), SearchContract.ViewInterface {
 
+    private lateinit var searchPresenter: SearchPresenter
     private lateinit var searchResultRecyclerView: RecyclerView
     private lateinit var adapter: SearchAdapter
     private lateinit var noMoviesTextView: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var query: String
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_movie)
+
         searchResultRecyclerView = findViewById(R.id.search_results_recyclerview)
         adapter = SearchAdapter(arrayListOf(), this@SearchActivity, itemListener)
+        searchResultRecyclerView.adapter = adapter
+        noMoviesTextView = findViewById(R.id.no_movies_textview)
+        progressBar = findViewById(R.id.progress_bar)
+
+        val intent = intent
+        query = intent.getStringExtra(SEARCH_QUERY).toString()
         setupViews()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        progressBar.visibility = VISIBLE
+        setupPresenter()
+        searchPresenter.getSearchResult(query)
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        searchPresenter.stop()
     }
 
     private fun setupViews() {
         searchResultRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun setupPresenter() {
+        val dataSource = RemoteDataSource()
+        searchPresenter = SearchPresenter(this, dataSource)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun displayResult(tmdbResponse: TmdbResponse) {
+        progressBar.visibility = INVISIBLE
+        if (tmdbResponse.totalResults == null || tmdbResponse.totalResults == 0) {
+            searchResultRecyclerView.visibility = INVISIBLE
+            noMoviesTextView.visibility = VISIBLE
+        } else {
+            adapter.movieList = tmdbResponse.results ?: arrayListOf()
+            adapter.notifyDataSetChanged()
+
+            searchResultRecyclerView.visibility = VISIBLE
+            noMoviesTextView.visibility = INVISIBLE
+        }
+    }
+
+    override fun displayMessage(message: String) {
+        Toast.makeText(this@SearchActivity, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun displayError(message: String) {
+        displayMessage(message)
     }
 
     companion object {

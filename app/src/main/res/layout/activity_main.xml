@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="There are currently no movies in your watch list. Tap the button below to get started!"
+            android:text="@string/no_movies_main_title"
             android:textAlignment="center" />
 
     </LinearLayout>

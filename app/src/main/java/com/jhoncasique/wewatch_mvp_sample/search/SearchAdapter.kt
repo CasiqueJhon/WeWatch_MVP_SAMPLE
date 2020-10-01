@@ -38,7 +38,7 @@ class SearchAdapter(var movieList: List<Movie>, var context: Context, var listen
         holder.overviewTextView.text = movieList[position].overview
 
         if (movieList[position].posterPath != null) {
-            Picasso.get().load(RetrofitClient.TMDB_BASE_URL + movieList[position].posterPath).into(holder.movieImageView)
+            Picasso.get().load("https://image.tmdb.org/t/p/w500/" + movieList[position].posterPath).into(holder.movieImageView)
         }
 
     }
